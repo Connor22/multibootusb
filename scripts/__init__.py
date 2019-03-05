@@ -8,3 +8,9 @@ __license__     = 'GPL'
 # Maintanence information
 __maintainer__  = 'Sundar'
 __email__       = 'feedback.multibootusb@gmail.com'
+
+import scripts.config
+from scripts.admin import *
+from scripts.gen import *
+import scripts.osdriver
+from scripts.mbusb_cli import *

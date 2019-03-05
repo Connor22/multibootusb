@@ -15,6 +15,11 @@ import shutil
 # installed system
 sys.path.append('/usr/local/lib/python3.4/dist-packages')
 sys.path.append('/usr/local/lib/python3.5/dist-packages')  # for version 8.9.0 onwards
+sys.path.append('/usr/local/lib/python3.6/dist-packages')  # for version 8.9.0 onwards
+
+PACKAGE_PARENT = '..'
+SCRIPT_DIR = os.path.dirname(os.path.realpath(os.path.join(os.getcwd(), os.path.expanduser(__file__))))
+sys.path.append(os.path.normpath(os.path.join(SCRIPT_DIR, PACKAGE_PARENT)))
 
 # Ensure that above issue doesn't occur on debian based distro as well
 if '/usr/lib/python3/dist-packages/scripts/' not in sys.path:
@@ -36,14 +41,17 @@ try:
     from scripts import config
     from scripts import osdriver
 except ImportError:
-    try:
-        from .scripts.mbusb_cli import *
-        from .scripts import admin
-        from .scripts import gen
-        from .scripts import config
-        from .scripts import osdriver
-    except ImportError:
         import scripts
+'''
+try:
+    config
+except NameError:
+    from .scripts.mbusb_cli import *
+    from .scripts import admin
+    from .scripts import gen
+    from .scripts import config
+    from .scripts import osdriver
+'''
 
 gui = True
 uninstall = False
@@ -196,18 +204,18 @@ def main():
 
     if gui is False:
         check_admin()
-        if uninstall is True and config.usb_disk is not '':
+        if uninstall is True and config is not '':
             cli_uninstall_distro()
-        elif uninstall is True and config.usb_disk is '':
+        elif uninstall is True and config is None:
             log('\nYou must provide \'-t\' option to point to your USB disk for uninstalling a distro.\n'
                 'See the usage example below.')
             usage()
-        elif config.image_path is '' and config.usb_disk is '':
+        elif config.image_path is None and config.usb_disk is None:
             log('\nNo option provided. See the usage below.')
             usage()
         elif config.cli_syslinux is True and config.usb_disk is not '':
             cli_install_syslinux()
-        elif config.image_path is '' or config.usb_disk is '':
+        elif config.image_path is None or config.usb_disk is None:
             log('\nOptions \'-i\' and \'-t\' must be supplied together. See the usage below.')
             usage()
         elif config.cli_dd is True:
